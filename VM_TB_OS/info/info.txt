@@ -1,0 +1,40 @@
+|----------------------------------------------------To run the the OS in QEMU----------------------------------------------------|
+|                                                                                                                                 |
+|You already have the bootloader binary, kernel binary and the OS image so to run the OS image cd into VM_TB_OS\build\OS_file     |
+|then in cmd enter the command "qemu-system-i386 -fda VM_TB_OS.bin" (if your using QEMU) and that will start the os image in QEMU |
+|                                                                                                                                 |
+----------------------------------------------------------------------------------------------------------------------------------|
+
+|----------------------------------------------------If you want to change something----------------------------------------------------------------|
+|                                                                                                                                                   |
+|If you want to make changes to the kernel or bootloader i recommend just putting both the boot.asm and the kernel.asm in the same folder           |
+|to avoid having to change directories a annoying amount of times and also compile the OS image in the same folder too (just to make things easier) |
+|                                                                                                                                                   |
+|---------------------------------------------------------------------------------------------------------------------------------------------------|
+
+|--------------------------------------------------------------Info------------------------------------------------------------------|
+|                                                                                                                                    |
+|This is a small OS i made i mainly started this to learn more about OS development and get a better understanding of how OS's work  |
+|the kernel was written in Real mode (BIOS Mode) which is uncommon for kernels since they are usually written in C                   |
+|it has a few commands and im going to add more commands in the future                                                               |
+|This is going to be a small text based OS (Thats was the TB means)                                                                  |
+|                                                                                                                                    |
+|------------------------------------------------------------------------------------------------------------------------------------|
+
+|-----------------------------------------Commands------------------------------------------------------------|
+|                                                                                                             |
+|To assemble the bootloader: nasm -f bin boot.asm -o boot.bin                                                 |
+|To assemble the kernel: nasm -f bin kernel.asm -o kernel.bin                                                 |  
+|To concentrate the bootloader and kernel into a OS binary: copy /b bootloader.bin + kernel.bin VM_TB_OS.bin  |
+|To run in QEMU: qemu-system-i386 -fda VM_TB_OS.bin                                                           |
+|                                                                                                             |
+|-------------------------------------------------------------------------------------------------------------|
+
+|-----------------VM Commands---------------------|
+|                                                 |
+|VM --ver: Shows the current version of VM TB OS  |
+|cls: Clears the screen                           |
+|pwr> 0: Halts the CPU                            |
+|aud beep: Makes a beeping sound                  |
+|                                                 |
+|-------------------------------------------------|
