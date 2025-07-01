@@ -45,6 +45,13 @@ main_loop:
     cmp ax, 1
     je do_beep
 
+    mov si, user_input
+    mov di, time_cmd
+    call compare_strings
+    cmp ax, 1
+    je print_time
+
+    mov bl, 0x04
     mov si, invalid_cmd_str
     call print_string
     jmp main_loop
@@ -61,6 +68,67 @@ print_string:
     mov ah, 0x0E
     int 0x10
     jmp print_string
+
+print_time:
+    mov ah, 0x02
+    int 0x1A
+
+    ; CH = hour BCD
+    ; CL = minute BCD
+    ; DH = second BCD
+
+    ; Print "Time: "
+    mov si, time_label
+    call print_string
+
+    ; Print hours
+    mov al, ch
+    call print_bcd_bytes
+
+    ; Print ":"
+    mov al, ':'
+    call print_char
+
+    ; Print minutes
+    mov al, cl
+    call print_bcd_bytes
+
+    ; Print ":"
+    mov al, ':'
+    call print_char
+
+    ; Print seconds
+    mov al, dh
+    call print_bcd_bytes
+
+    ; Newline
+    mov al, 13
+    call print_char
+    mov al, 10
+    call print_char
+
+    jmp main_loop
+
+print_bcd_bytes:
+    ; AL contains BCD value, e.g. 0x23 -> '2''3'
+    push ax
+    mov ah, al
+    and ah, 0F0h
+    shr ah, 4
+    add ah, '0'
+    mov al, ah
+    call print_char
+
+    pop ax
+    and al, 0Fh
+    add al, '0'
+    call print_char
+    ret
+
+print_char:
+    mov ah, 0x0E
+    int 0x10
+    ret
 
 done_print_string:
     ret
@@ -112,7 +180,7 @@ compare_loop:
     lodsb                      
     scasb                    
     jne not_equal              
-    cmp al, 0                    
+    cmp al, 0                     
     je equal                    
     jmp compare_loop            
 
@@ -128,6 +196,10 @@ message:
     db 'Welcome to VM OS :)', 13, 10
     db 13, 10
     db 0
+
+time_label:
+    db 13, 10
+    db 'Time: ', 0
     
 shut_down:
     mov al, 0x00
@@ -181,11 +253,11 @@ do_beep:
 beep:
     ;Enable to test if beep command works if your qemu build dosent have pcspk
     ;To check if your qemu build has pcspk enter "qemu-system-i386 -device help" to check
-;  --------------
-    ;mov al, '*'
-    ;mov ah, 0x0E
-    ;int 0x10
-;  --------------
+ ; --------------
+    mov al, '*'
+    mov ah, 0x0E
+    int 0x10
+ ; --------------
 
     mov al, 7        ; BEL character
     mov ah, 0x0E     ; BIOS teletype function
@@ -213,6 +285,7 @@ clear_screen_cmd: db 'cls', 0
 beep_cmd:         db 'aud beep', 0
 vm_ver_cmd:       db 'VM --ver', 0
 shut_down_cmd:    db 'pwr> 0', 0
+time_cmd:         db 'time/show', 0
 
 ; Command to update kernel: nasm -f bin kernel.asm -o kernel.bin
 ; Command to update OS: copy /b bootloader.bin + kernel.bin VM_TB_OS.bin
