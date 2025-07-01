@@ -36,5 +36,6 @@
 |cls: Clears the screen                           |
 |pwr> 0: Halts the CPU                            |
 |aud beep: Makes a beeping sound                  |
+|time/show: Shows the current time                |
 |                                                 |
 |-------------------------------------------------|
